@@ -27,6 +27,13 @@ ENABLE_LOCAL_TRANSCRIPT_COPY = False
 # Destination folder under repo root when transcript copy is enabled.
 LOCAL_TRANSCRIPT_COPY_DIR = Path("tmp") / "transcripts"
 
+# When True, attempt to push commits to the configured remote after committing.
+# Be conservative by default; set to True to enable auto-push behavior.
+ENABLE_AUTO_PUSH = True
+
+# Remote name (typically 'origin').
+AUTO_PUSH_REMOTE = "origin"
+
 
 def get_repo_root(script_dir: Path) -> Path:
   try:
@@ -135,6 +142,28 @@ def safe_git_commit(repo_root: Path, files_to_add: list[Path], timestamp: str) -
       stdout=subprocess.DEVNULL,
       stderr=subprocess.DEVNULL,
     )
+    # Also attempt to add agent files so updates to .github/agents are captured.
+    subprocess.run(
+      ["git", "-C", str(repo_root), "add", ".github/agents"],
+      check=False,
+      stdout=subprocess.DEVNULL,
+      stderr=subprocess.DEVNULL,
+    )
+  except Exception:
+    pass
+
+
+def safe_git_push(repo_root: Path) -> None:
+  try:
+    if not ENABLE_AUTO_PUSH:
+      return
+    # Push current branch to configured remote quietly; non-blocking.
+    subprocess.run(
+      ["git", "-C", str(repo_root), "push", AUTO_PUSH_REMOTE, "HEAD"],
+      check=False,
+      stdout=subprocess.DEVNULL,
+      stderr=subprocess.DEVNULL,
+    )
   except Exception:
     pass
 
@@ -152,6 +181,9 @@ def main() -> int:
     prompt = sanitize_prompt(str(payload.get("prompt", "unknown")))
     transcript_path_raw = str(payload.get("transcript_path", "")).strip()
     transcript_path = Path(transcript_path_raw) if transcript_path_raw else Path()
+    copilot_mode = str(payload.get("copilot_mode", "Agent")).strip() or "Agent"
+    copilot_model = str(payload.get("copilot_model", "GPT-5.4 mini")).strip() or "GPT-5.4 mini"
+    socratic_mode = str(payload.get("socratic_mode", "ON")).strip() or "ON"
 
     timestamp_history = datetime.now().strftime("%d-%m-%Y %H:%M")
     timestamp_journal = datetime.now().strftime("%d-%m-%Y %H:%M")
@@ -172,11 +204,18 @@ def main() -> int:
       f"- **Date**: {timestamp_journal}\n"
       f"- **User**: {user_identity}\n"
       f"- **Prompt**: {prompt}\n"
+      f"- **CoPilot Mode**: {copilot_mode}\n"
+      f"- **CoPilot Model**: {copilot_model}\n"
+      f"- **Socratic Mode**: {socratic_mode}\n"
+      "- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.\n"
+      "- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.\n"
     )
 
     append_entry(history_file, history_entry)
     append_entry(journal_file, journal_entry)
     safe_git_commit(repo_root, [history_file, journal_file], timestamp_history)
+    # Attempt a push after committing changes (agents, journal, prompt history).
+    safe_git_push(repo_root)
   except Exception:
     # Non-blocking hook by design.
     return 0

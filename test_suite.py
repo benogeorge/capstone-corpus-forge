@@ -83,6 +83,20 @@ class CorpusForgeReliabilityTests(unittest.TestCase):
         # Should gracefully return a validation error block
         self.assertEqual(response.status_code, 400)
 
+    def test_failure_incomplete_chat_payload(self):
+        """Scenario: Client sends a partial JSON body missing required keys."""
+        response = self.client.post(
+            "/chat/query",
+            json={"question": "Hello", "tone": "professional"},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        payload = response.get_json()
+        self.assertIsNotNone(payload)
+        self.assertIn("error", payload)
+        self.assertIn("debug", payload)
+        self.assertIn("audience", payload["debug"])
+
     def test_build_system_instruction_formats_markdown(self):
         """Scenario: Prompt steering inputs should become structured markdown."""
         instruction = build_system_instruction("friendly", "students", "explain the topic")

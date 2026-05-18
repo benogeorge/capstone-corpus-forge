@@ -175,11 +175,32 @@ def query():
     Expects JSON body with keys: 'question', 'tone', 'audience', 'task'.
     Returns JSON with model response plus source trace metadata.
     """
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "Invalid JSON payload.",
+            "debug": "Expected a JSON object body with question, tone, and audience keys."
+        }), 400
+
+    required_keys = ["question", "tone", "audience"]
+    missing_keys = [key for key in required_keys if key not in data]
+    if missing_keys:
+        return jsonify({
+            "error": "Incomplete JSON payload.",
+            "debug": f"Missing required keys: {', '.join(missing_keys)}.",
+            "received_keys": sorted(list(data.keys())),
+        }), 400
+
     user_question = (data.get("question") or "").strip()
     tone = (data.get("tone") or "professional").strip()
     audience = (data.get("audience") or "general").strip()
     task = (data.get("task") or "explain").strip()
+
+    if not user_question:
+        return jsonify({
+            "error": "Question cannot be empty.",
+            "debug": "The question key was present but its value was blank or whitespace."
+        }), 400
 
     if not user_question:
         return jsonify({"error": "Question cannot be empty."}), 400

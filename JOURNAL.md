@@ -190,3 +190,9 @@
 - **Date**: 18-05-2026 16:07
 - **User**: redowan-ahmed.sameer@epita.fr
 - **Prompt**: Explain step-by-step how a RAG system tracks text chunks back to their source files so the user knows exactly where an answer came from. Once explained, modify only the internal logic of the /chat/query route to return a JSON payload that includes an array of source filenames and chunk IDs ({"response": ai_output, "sources": ["file1.pdf", "file2.py"]}) without altering the core HTML template structure.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 16:18
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how system-level instructions differ from user-level instructions when guiding an LLM's behavior. Then, write a helper function build_system_instruction(tone, audience, task) that maps form inputs to structured markdown instructions for the AI's persona, returning a clean string that I can cleanly pass into the Gemini API config

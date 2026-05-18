@@ -73,3 +73,6 @@
 ### 18-05-2026 16:04
 - **Prompt**: Explain the conceptual difference between a traditional SQL LIKE %query% keyword search and a vector embedding semantic search inside ChromaDB. After explaining, give me an isolated Python function debug_vector_distance(query_text, document_text) that calculates and prints the cosine similarity score between a user query and a chunk so I can see how ChromaDB ranks them under the hood
 
+### 18-05-2026 16:18
+- **Prompt**: Explain how system-level instructions differ from user-level instructions when guiding an LLM's behavior. Then, write a helper function build_system_instruction(tone, audience, task) that maps form inputs to structured markdown instructions for the AI's persona, returning a clean string that I can cleanly pass into the Gemini API config
+

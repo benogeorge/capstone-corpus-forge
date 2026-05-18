@@ -2,6 +2,7 @@ import os
 import io
 import unittest
 from app import app
+from utils import build_system_instruction
 
 
 class CorpusForgeReliabilityTests(unittest.TestCase):
@@ -79,3 +80,13 @@ class CorpusForgeReliabilityTests(unittest.TestCase):
         response = self.client.post("/chat/query", json=data)
         # Should gracefully return a validation error block
         self.assertEqual(response.status_code, 400)
+
+    def test_build_system_instruction_formats_markdown(self):
+        """Scenario: Prompt steering inputs should become structured markdown."""
+        instruction = build_system_instruction("friendly", "students", "explain the topic")
+
+        self.assertIn("# Persona", instruction)
+        self.assertIn("# Prompt Steering", instruction)
+        self.assertIn("- Tone: friendly", instruction)
+        self.assertIn("- Audience: students", instruction)
+        self.assertIn("- Task: explain the topic", instruction)

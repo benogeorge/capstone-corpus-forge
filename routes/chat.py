@@ -22,6 +22,7 @@ except Exception:
     genai = None
 from flask import Blueprint, jsonify, render_template, request, session
 
+from utils import build_system_instruction
 from vector_store import VectorStoreManager
 
 
@@ -221,7 +222,7 @@ def query():
         pass
 
     # Build grounded prompts
-    system_prompt = f"You are a helpful assistant with access to document context.\n- Tone: {tone}\n- Audience: {audience}\n- Task: {task}\n\nProvide clear, accurate answers based on the provided context. If the context doesn't contain the answer, acknowledge that and offer what you can."
+    system_prompt = build_system_instruction(tone, audience, task)
 
     user_prompt = f"Context from documents:\n{context_text}\n\nUser question: {user_question}\n\nPlease answer the question based on the context above."
 

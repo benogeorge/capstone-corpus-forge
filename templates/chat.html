@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Corpus Forge | Enterprise RAG Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}" />
+</head>
+<body data-chat-endpoint="{{ url_for('chat.query') }}">
+    <header class="top-nav" role="banner">
+        <div class="brand">
+            <h1>Corpus Forge</h1>
+            <p>Enterprise Retrieval-Augmented Workspace</p>
+        </div>
+        <nav class="nav-links" aria-label="Primary navigation">
+            <a href="{{ url_for('ingestion.index') }}">Corpus Management</a>
+            <a href="{{ url_for('chat.chat') }}" class="is-active" aria-current="page">AI Chat Workspace</a>
+        </nav>
+    </header>
+
+    <main class="workspace" role="main">
+        <aside class="control-sidebar" aria-label="Configuration and corpus controls">
+            <section class="panel">
+                <h2>Model Status</h2>
+                <div class="status-grid">
+                    <div class="status-row">
+                        <span>Gemini</span>
+                        <span class="status-badge {{ 'online' if gemini_available else 'offline' }}">
+                            {{ 'Online' if gemini_available else 'Unavailable' }}
+                        </span>
+                    </div>
+                    <div class="status-row">
+                        <span>OpenAI Fallback</span>
+                        <span class="status-badge {{ 'online' if openai_available else 'offline' }}">
+                            {{ 'Online' if openai_available else 'Unavailable' }}
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Prompt Configuration</h2>
+                <label for="audience">Audience</label>
+                <select id="audience" name="audience">
+                    <option value="general">General</option>
+                    <option value="technical">Technical</option>
+                    <option value="executive">Executive</option>
+                    <option value="beginner">Beginner</option>
+                </select>
+
+                <label for="tone">Tone</label>
+                <select id="tone" name="tone">
+                    <option value="professional">Professional</option>
+                    <option value="formal">Formal</option>
+                    <option value="concise">Concise</option>
+                    <option value="friendly">Friendly</option>
+                </select>
+
+                <label for="task">Task</label>
+                <select id="task" name="task">
+                    <option value="explain">Explain</option>
+                    <option value="summarize">Summarize</option>
+                    <option value="compare">Compare</option>
+                    <option value="question">Answer Question</option>
+                    <option value="code">Generate Code</option>
+                </select>
+            </section>
+
+            <section class="panel corpus-panel">
+                <h2>Active Corpus</h2>
+                <ul class="corpus-list" aria-live="polite">
+                    {% for file in active_corpus %}
+                    <li title="{{ file }}">{{ file }}</li>
+                    {% endfor %}
+                </ul>
+                {% if not active_corpus %}
+                <p class="empty-state">No active files selected. Add files in Corpus Management.</p>
+                {% endif %}
+            </section>
+        </aside>
+
+        <section class="conversation-shell" aria-label="Conversation workspace">
+            <div class="conversation-header">
+                <h2>Grounded Conversation</h2>
+                <p>Responses are generated from your selected corpus files.</p>
+            </div>
+
+            <div id="errorContainer" class="error-box" role="alert" aria-live="assertive"></div>
+
+            <section id="chatLog" class="chat-log" aria-label="Conversation log">
+                <div class="welcome-card">
+                    Ask a question to begin. Your prompt will be sent to the RAG route and grounded in the active corpus.
+                </div>
+            </section>
+
+            <form id="chatForm" class="composer" novalidate>
+                <label for="questionInput">Your Prompt</label>
+                <textarea
+                    id="questionInput"
+                    name="question"
+                    placeholder="Ask about architecture, implementation details, requirements, or risks..."
+                    required
+                ></textarea>
+                <div class="composer-actions">
+                    <span class="composer-hint">Press Enter to send, Shift+Enter for a newline.</span>
+                    <button id="sendButton" type="submit">Send Prompt</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}" defer></script>
+</body>
+</html>

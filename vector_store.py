@@ -87,8 +87,8 @@ class VectorStoreManager:
         if chunks:
             self.collection.add(documents=chunks, metadatas=metadata_list, ids=ids)
 
-    def delete_document(self, filename: str) -> None:
-        """Delete all chunks associated with a document.
+    def delete_document_chunks(self, filename: str) -> None:
+        """Delete all chunks associated with a document filename.
 
         Args:
             filename: Name of the document to delete.
@@ -100,7 +100,11 @@ class VectorStoreManager:
         try:
             self.collection.delete(where={"filename": filename})
         except Exception as e:
-            print(f"Error deleting document {filename} from vector store: {e}")
+            print(f"Error deleting chunks for document {filename} from vector store: {e}")
+
+    def delete_document(self, filename: str) -> None:
+        """Backward-compatible alias for deleting all chunks of one document."""
+        self.delete_document_chunks(filename)
 
     def query_context(
         self, active_files: list[str], query_text: str, n_results: int = 5

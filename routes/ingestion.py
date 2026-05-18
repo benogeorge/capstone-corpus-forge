@@ -109,7 +109,7 @@ def delete_file(filename):
     if os.path.exists(file_path) and os.path.isfile(file_path):
         os.remove(file_path)
         # Remove from vector store as well
-        v_store.delete_document(secure_name)
+        v_store.delete_document_chunks(secure_name)
         active_corpus = session.get("active_corpus", [])
         if secure_name in active_corpus:
             session["active_corpus"] = [file for file in active_corpus if file != secure_name]

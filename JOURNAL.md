@@ -340,3 +340,13 @@
 - **Date**: 18-05-2026 18:04
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain what happens to a vector database's collection integrity if a file is deleted from the data/ folder but its chunks remain inside ChromaDB. Then, write a complementary method for VectorStoreManager named delete_document_chunks(filename) that can be safely called from my /delete/<filename> route to keep them perfectly synced.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 18:04
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain what happens to a vector database's collection integrity if a file is deleted from the data/ folder but its chunks remain inside ChromaDB. Then, write a complementary method for VectorStoreManager named delete_document_chunks(filename) that can be safely called from my /delete/<filename> route to keep them perfectly synced.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Added VectorStoreManager.delete_document_chunks(filename), kept delete_document(filename) as a backward-compatible alias, and updated the /delete/<filename> ingestion route to call the new explicit chunk-deletion method.
+- **Context and Reasons for Changes**: Deleting files from disk without deleting their indexed chunks leaves stale vectors that can surface in retrieval, so explicit filename-scoped chunk deletion keeps the corpus and vector index synchronized.

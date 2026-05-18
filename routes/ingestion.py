@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 from werkzeug.utils import secure_filename
 
 from utils import allowed_file, validate_file_content
-from extractor import extract_text_from_file
+from extractor import clean_extracted_text, extract_text_from_file
 from vector_store import VectorStoreManager
 
 # Initialize the store manager helper
@@ -83,7 +83,7 @@ def upload_file():
     file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     file.save(file_path)
 
-    extracted_text = extract_text_from_file(file_path)
+    extracted_text = clean_extracted_text(extract_text_from_file(file_path))
     # Automatically index the text chunk embeddings into our vector space
     v_store.add_document(filename, extracted_text)
     flash(

@@ -4,6 +4,7 @@ import unittest
 from app import app
 from utils import build_system_instruction
 from routes.chat import _recent_chat_history
+from extractor import clean_extracted_text
 
 
 class CorpusForgeReliabilityTests(unittest.TestCase):
@@ -103,3 +104,14 @@ class CorpusForgeReliabilityTests(unittest.TestCase):
         self.assertEqual(len(recent_history), 5)
         self.assertEqual(recent_history[0]["parts"][0], "message 2")
         self.assertEqual(recent_history[-1]["parts"][0], "message 6")
+
+    def test_clean_extracted_text_removes_page_noise(self):
+        """Scenario: PDF text should lose page markers and excess blank lines."""
+        raw_text = "Intro\n\nPage 1\n\nBody line one\n\n\n2\nBody line two\nPage 2 of 10\n\nEnd"
+        cleaned_text = clean_extracted_text(raw_text)
+
+        self.assertNotIn("Page 1", cleaned_text)
+        self.assertNotIn("Page 2 of 10", cleaned_text)
+        self.assertNotIn("\n\n\n", cleaned_text)
+        self.assertIn("Body line one", cleaned_text)
+        self.assertIn("Body line two", cleaned_text)

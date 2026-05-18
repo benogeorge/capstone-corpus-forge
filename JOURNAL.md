@@ -276,3 +276,13 @@
 - **Date**: 18-05-2026 17:27
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain how PDF parsing challenges (like multi-column layouts, page headers, and footers) pollute vector embeddings with noise. Once explained, provide an isolated helper function clean_extracted_text(raw_text: str) -> str that drops repeated page numbers and stray newline sequences before text is sent to v_store.add_document().
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:11
+- **User**: redowan-ahmed.sameer@epita.fr
+- **Prompt**: Explain how PDF parsing challenges (like multi-column layouts, page headers, and footers) pollute vector embeddings with noise. Once explained, provide an isolated helper function clean_extracted_text(raw_text: str) -> str that drops repeated page numbers and stray newline sequences before text is sent to v_store.add_document().
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Added clean_extracted_text() to extractor.py, applied it during ingestion before vector indexing, and added a focused test that verifies page-number and blank-line cleanup.
+- **Context and Reasons for Changes**: PDF extraction often includes layout artifacts such as page markers and extra newlines; cleaning those before embedding reduces vector noise and makes ChromaDB retrieval more stable.

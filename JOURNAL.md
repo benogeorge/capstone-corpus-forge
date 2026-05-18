@@ -308,3 +308,13 @@
 - **Date**: 18-05-2026 17:45
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain step-by-step how network latency and API rate-limiting (HTTP 429) can cause a web application's worker threads to hang or crash. Then, provide an isolated wrapper pattern using standard Python try/except blocks and exponential backoff timing logic that I can wrap around my Gemini API call to guarantee server uptime.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:11
+- **User**: Admin
+- **Prompt**: Explain step-by-step how network latency and API rate-limiting (HTTP 429) can cause a web application's worker threads to hang or crash. Then, provide an isolated wrapper pattern using standard Python try/except blocks and exponential backoff timing logic that I can wrap around my Gemini API call to guarantee server uptime.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
+- **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that only ask for an explanation and example.

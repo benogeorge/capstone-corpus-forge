@@ -228,3 +228,13 @@
 - **Date**: 18-05-2026 16:52
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain how a stateless HTTP protocol like Flask can maintain a multi-turn chat conversation history memory for a generative model. After explaining, show me how to use Flask's session object to append a list of dictionaries ({'role': 'user', 'parts': [...]}) to pass a rolling window of the last 5 messages to the Gemini API without rewriting my current database manager.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 16:58
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how a stateless HTTP protocol like Flask can maintain a multi-turn chat conversation history memory for a generative model. After explaining, show me how to use Flask's session object to append a list of dictionaries ({'role': 'user', 'parts': [...]}) to pass a rolling window of the last 5 messages to the Gemini API without rewriting my current database manager.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Added session-backed rolling chat history helpers to routes/chat.py, updated the Gemini call path to send the last five session messages as structured contents, and added a unit test for the rolling window helper.
+- **Context and Reasons for Changes**: Flask remains stateless across requests, so the chat route now stores serialized message dictionaries in session and trims the outgoing Gemini payload to a small recent window without changing the vector store manager.

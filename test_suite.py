@@ -3,6 +3,7 @@ import io
 import unittest
 from app import app
 from utils import build_system_instruction
+from routes.chat import _recent_chat_history
 
 
 class CorpusForgeReliabilityTests(unittest.TestCase):
@@ -90,3 +91,15 @@ class CorpusForgeReliabilityTests(unittest.TestCase):
         self.assertIn("- Tone: friendly", instruction)
         self.assertIn("- Audience: students", instruction)
         self.assertIn("- Task: explain the topic", instruction)
+
+    def test_recent_chat_history_keeps_last_five_messages(self):
+        """Scenario: Rolling history should only expose the latest five messages."""
+        history = [
+            {"role": "user", "parts": [f"message {index}"]}
+            for index in range(7)
+        ]
+        recent_history = _recent_chat_history(history=history, limit=5)
+
+        self.assertEqual(len(recent_history), 5)
+        self.assertEqual(recent_history[0]["parts"][0], "message 2")
+        self.assertEqual(recent_history[-1]["parts"][0], "message 6")

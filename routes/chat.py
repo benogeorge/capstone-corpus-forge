@@ -28,6 +28,9 @@ from vector_store import VectorStoreManager
 
 chat_bp = Blueprint("chat", __name__)
 v_store = VectorStoreManager()
+CHAT_HISTORY_SESSION_KEY = "chat_history"
+CHAT_HISTORY_STORAGE_LIMIT = 20
+CHAT_HISTORY_WINDOW = 5
 
 # Configure the OpenAI client (kept as fallback) and the Gemini client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -104,6 +107,52 @@ def _resolve_gemini_model(gemini_mod):
         return available_models[0], available_models
 
     return "gemini-2.0-flash", available_models
+
+
+def _normalize_chat_message(message):
+    """Return a session-safe Gemini message dict or None if malformed."""
+    if not isinstance(message, dict):
+        return None
+
+    role = (message.get("role") or "").strip()
+    parts = message.get("parts") or []
+
+    if isinstance(parts, str):
+        parts = [parts]
+
+    cleaned_parts = [str(part).strip() for part in parts if str(part).strip()]
+    if role not in {"user", "model"} or not cleaned_parts:
+        return None
+
+    return {"role": role, "parts": cleaned_parts}
+
+
+def _load_chat_history():
+    """Load and sanitize the session chat history."""
+    raw_history = session.get(CHAT_HISTORY_SESSION_KEY, [])
+    return [message for message in (_normalize_chat_message(item) for item in raw_history) if message]
+
+
+def _store_chat_history(history):
+    """Persist a bounded chat history back into the Flask session."""
+    session[CHAT_HISTORY_SESSION_KEY] = history[-CHAT_HISTORY_STORAGE_LIMIT:]
+    session.modified = True
+
+
+def _append_chat_message(role, text):
+    """Append a single message to session history and keep the store bounded."""
+    history = _load_chat_history()
+    history.append({"role": role, "parts": [text]})
+    _store_chat_history(history)
+
+
+def _recent_chat_history(history=None, limit=CHAT_HISTORY_WINDOW):
+    """Return the latest messages to send to Gemini.
+
+    When history is omitted, the current Flask session store is used.
+    """
+    source_history = _load_chat_history() if history is None else history
+    return source_history[-limit:]
 
 
 @chat_bp.route("/")
@@ -226,7 +275,8 @@ def query():
 
     user_prompt = f"Context from documents:\n{context_text}\n\nUser question: {user_question}\n\nPlease answer the question based on the context above."
 
-    full_input = f"{system_prompt}\n\n{user_prompt}"
+    recent_history = _recent_chat_history()
+    gemini_contents = recent_history + [{"role": "user", "parts": [user_prompt]}]
 
     # Resolve a compatible model for the current key/API version
     model_name, available_models = _resolve_gemini_model(gemini_mod)
@@ -236,8 +286,11 @@ def query():
     try:
         # Official google-generativeai path
         if hasattr(gemini_mod, "GenerativeModel"):
-            model = gemini_mod.GenerativeModel(model_name)
-            resp = model.generate_content(full_input)
+            try:
+                model = gemini_mod.GenerativeModel(model_name, system_instruction=system_prompt)
+            except TypeError:
+                model = gemini_mod.GenerativeModel(model_name)
+            resp = model.generate_content(gemini_contents)
             ai_output = getattr(resp, "text", None)
             if not ai_output and getattr(resp, "candidates", None):
                 parts = []
@@ -254,14 +307,18 @@ def query():
 
         # Compatibility path used by some newer SDK variants
         elif hasattr(gemini_mod, "generate"):
-            resp = gemini_mod.generate(model=model_name, input=full_input)
+            resp = gemini_mod.generate(model=model_name, input=gemini_contents)
             ai_output = getattr(resp, "output_text", None) or getattr(resp, "text", None)
             if not ai_output and getattr(resp, "candidates", None):
                 ai_output = getattr(resp.candidates[0], "text", None)
 
         # Legacy fallback: genai.chat.create
         elif hasattr(gemini_mod, "chat") and hasattr(gemini_mod.chat, "create"):
-            resp = gemini_mod.chat.create(model=model_name, messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}])
+            messages = [{"role": "system", "content": system_prompt}]
+            for message in recent_history:
+                messages.append({"role": message["role"], "content": "\n".join(message["parts"])})
+            messages.append({"role": "user", "content": user_prompt})
+            resp = gemini_mod.chat.create(model=model_name, messages=messages)
             ai_output = getattr(resp, "output", None) or getattr(resp, "content", None)
             if isinstance(ai_output, list):
                 ai_output = "\n".join([getattr(x, "content", x) for x in ai_output])
@@ -275,6 +332,9 @@ def query():
 
     if not ai_output:
         ai_output = "No response generated."
+
+    _append_chat_message("user", user_prompt)
+    _append_chat_message("model", ai_output)
 
     return jsonify(
         {

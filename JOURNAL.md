@@ -356,3 +356,13 @@
 - **Date**: 18-05-2026 20:44
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain how an enterprise application isolates vector spaces between different groups or users so data never leaks across sessions. Show me how to dynamically alter the collection initialization parameter inside my VectorStoreManager constructor so that distinct workspaces generate entirely separate database tables.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 18:04
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how an enterprise application isolates vector spaces between different groups or users so data never leaks across sessions. Show me how to dynamically alter the collection initialization parameter inside my VectorStoreManager constructor so distinct workspaces generate entirely separate database tables.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Extended VectorStoreManager to accept an optional workspace_scope, added a sanitized collection-name builder that appends the workspace identifier to the base Chroma collection name, and preserved default behavior for existing callers.
+- **Context and Reasons for Changes**: Enterprise isolation is enforced by partitioning vector data into workspace-specific collections, which prevents one session or tenant from querying another tenant's embeddings while keeping the old constructor signature backwards-compatible.

@@ -244,3 +244,13 @@
 - **Date**: 18-05-2026 17:11
 - **User**: demod-singh.tamang@epita.fr
 - **Prompt**: Explain how Server-Sent Events (SSE) or HTTP streaming works conceptually compared to standard blocking JSON responses when waiting for an LLM to reply. Without changing my current static routing files, provide a standalone Flask view example using Python generators (yield) that demonstrates how streaming chunks are pushed to a client.
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:11
+- **User**: Admin
+- **Prompt**: Explain how Server-Sent Events (SSE) or HTTP streaming works conceptually compared to standard blocking JSON responses when waiting for an LLM to reply. Without changing my current static routing files, provide a standalone Flask view example using Python generators (yield) that demonstrates how streaming chunks are pushed to a client.
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
+- **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that only ask for an explanation and example.

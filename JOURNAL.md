@@ -222,3 +222,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
 - **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that do not modify code.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 16:52
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how a stateless HTTP protocol like Flask can maintain a multi-turn chat conversation history memory for a generative model. After explaining, show me how to use Flask's session object to append a list of dictionaries ({'role': 'user', 'parts': [...]}) to pass a rolling window of the last 5 messages to the Gemini API without rewriting my current database manager.

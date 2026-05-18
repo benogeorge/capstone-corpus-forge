@@ -84,3 +84,6 @@
 ### 18-05-2026 16:44
 - **Prompt**: Explain the concept of 'hallucination' in LLMs and how a system prompt can act as a defensive guardrail. Once explained, give me an exact system prompt template string that instructs Gemini to say 'I cannot find the answer in the provided workspace corpus' if the retrieved ChromaDB context lacks sufficient information, ensuring it never invents data
 
+### 18-05-2026 16:52
+- **Prompt**: Explain how a stateless HTTP protocol like Flask can maintain a multi-turn chat conversation history memory for a generative model. After explaining, show me how to use Flask's session object to append a list of dictionaries ({'role': 'user', 'parts': [...]}) to pass a rolling window of the last 5 messages to the Gemini API without rewriting my current database manager.
+

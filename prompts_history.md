@@ -102,3 +102,6 @@
 ### 18-05-2026 17:45
 - **Prompt**: Explain step-by-step how network latency and API rate-limiting (HTTP 429) can cause a web application's worker threads to hang or crash. Then, provide an isolated wrapper pattern using standard Python try/except blocks and exponential backoff timing logic that I can wrap around my Gemini API call to guarantee server uptime.
 
+### 18-05-2026 17:51
+- **Prompt**: Explain how a backend application handles corrupted or missing keys in a POST request body. Write a defensive parsing block for the /chat/query endpoint that verifies the existence of question, tone, and audience keys using request.get_json(), returning descriptive debugging messages if a payload arrives incomplete.
+

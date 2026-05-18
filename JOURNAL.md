@@ -318,3 +318,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
 - **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that only ask for an explanation and example.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:51
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how a backend application handles corrupted or missing keys in a POST request body. Write a defensive parsing block for the /chat/query endpoint that verifies the existence of question, tone, and audience keys using request.get_json(), returning descriptive debugging messages if a payload arrives incomplete.

@@ -334,3 +334,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
 - **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that only ask for an explanation and example.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 18:04
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain what happens to a vector database's collection integrity if a file is deleted from the data/ folder but its chunks remain inside ChromaDB. Then, write a complementary method for VectorStoreManager named delete_document_chunks(filename) that can be safely called from my /delete/<filename> route to keep them perfectly synced.

@@ -105,3 +105,6 @@
 ### 18-05-2026 17:51
 - **Prompt**: Explain how a backend application handles corrupted or missing keys in a POST request body. Write a defensive parsing block for the /chat/query endpoint that verifies the existence of question, tone, and audience keys using request.get_json(), returning descriptive debugging messages if a payload arrives incomplete.
 
+### 18-05-2026 18:04
+- **Prompt**: Explain what happens to a vector database's collection integrity if a file is deleted from the data/ folder but its chunks remain inside ChromaDB. Then, write a complementary method for VectorStoreManager named delete_document_chunks(filename) that can be safely called from my /delete/<filename> route to keep them perfectly synced.
+

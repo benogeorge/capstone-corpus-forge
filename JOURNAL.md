@@ -206,3 +206,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: Added build_system_instruction() to utils.py, reused it in routes/chat.py to standardize Gemini persona formatting, and added a unit test that checks the markdown structure and prompt-steering values.
 - **Context and Reasons for Changes**: The chat route was inlining persona text directly; moving that logic into a shared helper creates a clean, reusable system-instruction string that can be passed into Gemini configuration or request assembly without duplicating prompt formatting.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 16:44
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain the concept of 'hallucination' in LLMs and how a system prompt can act as a defensive guardrail. Once explained, give me an exact system prompt template string that instructs Gemini to say 'I cannot find the answer in the provided workspace corpus' if the retrieved ChromaDB context lacks sufficient information, ensuring it never invents data

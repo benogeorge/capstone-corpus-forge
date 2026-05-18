@@ -93,3 +93,6 @@
 ### 18-05-2026 17:18
 - **Prompt**: Explain the operational risk of querying a vector database when session['active_corpus'] is completely empty. Then, provide a clean, defensive validation block that I can insert at the very top of my /chat/query route to immediately return a clean HTTP 400 JSON error message to the frontend before making any database calls
 
+### 18-05-2026 17:27
+- **Prompt**: Explain how PDF parsing challenges (like multi-column layouts, page headers, and footers) pollute vector embeddings with noise. Once explained, provide an isolated helper function clean_extracted_text(raw_text: str) -> str that drops repeated page numbers and stray newline sequences before text is sent to v_store.add_document().
+

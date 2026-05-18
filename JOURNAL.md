@@ -270,3 +270,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: No code changes were needed; this interaction only required documentation of the request in JOURNAL.md.
 - **Context and Reasons for Changes**: The repository instructions require every prompt to be appended to the journal, including turns that only ask for an explanation and example.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:27
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how PDF parsing challenges (like multi-column layouts, page headers, and footers) pollute vector embeddings with noise. Once explained, provide an isolated helper function clean_extracted_text(raw_text: str) -> str that drops repeated page numbers and stray newline sequences before text is sent to v_store.add_document().

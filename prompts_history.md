@@ -90,3 +90,6 @@
 ### 18-05-2026 17:11
 - **Prompt**: Explain how Server-Sent Events (SSE) or HTTP streaming works conceptually compared to standard blocking JSON responses when waiting for an LLM to reply. Without changing my current static routing files, provide a standalone Flask view example using Python generators (yield) that demonstrates how streaming chunks are pushed to a client.
 
+### 18-05-2026 17:18
+- **Prompt**: Explain the operational risk of querying a vector database when session['active_corpus'] is completely empty. Then, provide a clean, defensive validation block that I can insert at the very top of my /chat/query route to immediately return a clean HTTP 400 JSON error message to the frontend before making any database calls
+

@@ -238,3 +238,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: Added session-backed rolling chat history helpers to routes/chat.py, updated the Gemini call path to send the last five session messages as structured contents, and added a unit test for the rolling window helper.
 - **Context and Reasons for Changes**: Flask remains stateless across requests, so the chat route now stores serialized message dictionaries in session and trims the outgoing Gemini payload to a small recent window without changing the vector store manager.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 17:11
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how Server-Sent Events (SSE) or HTTP streaming works conceptually compared to standard blocking JSON responses when waiting for an LLM to reply. Without changing my current static routing files, provide a standalone Flask view example using Python generators (yield) that demonstrates how streaming chunks are pushed to a client.

@@ -87,3 +87,6 @@
 ### 18-05-2026 16:52
 - **Prompt**: Explain how a stateless HTTP protocol like Flask can maintain a multi-turn chat conversation history memory for a generative model. After explaining, show me how to use Flask's session object to append a list of dictionaries ({'role': 'user', 'parts': [...]}) to pass a rolling window of the last 5 messages to the Gemini API without rewriting my current database manager.
 
+### 18-05-2026 17:11
+- **Prompt**: Explain how Server-Sent Events (SSE) or HTTP streaming works conceptually compared to standard blocking JSON responses when waiting for an LLM to reply. Without changing my current static routing files, provide a standalone Flask view example using Python generators (yield) that demonstrates how streaming chunks are pushed to a client.
+

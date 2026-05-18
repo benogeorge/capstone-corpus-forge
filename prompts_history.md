@@ -108,3 +108,6 @@
 ### 18-05-2026 18:04
 - **Prompt**: Explain what happens to a vector database's collection integrity if a file is deleted from the data/ folder but its chunks remain inside ChromaDB. Then, write a complementary method for VectorStoreManager named delete_document_chunks(filename) that can be safely called from my /delete/<filename> route to keep them perfectly synced.
 
+### 18-05-2026 20:44
+- **Prompt**: Explain how an enterprise application isolates vector spaces between different groups or users so data never leaks across sessions. Show me how to dynamically alter the collection initialization parameter inside my VectorStoreManager constructor so that distinct workspaces generate entirely separate database tables.
+

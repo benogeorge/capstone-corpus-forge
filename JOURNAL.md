@@ -350,3 +350,9 @@
 - **Socratic Mode**: ON
 - **Changes Made**: Added VectorStoreManager.delete_document_chunks(filename), kept delete_document(filename) as a backward-compatible alias, and updated the /delete/<filename> ingestion route to call the new explicit chunk-deletion method.
 - **Context and Reasons for Changes**: Deleting files from disk without deleting their indexed chunks leaves stale vectors that can surface in retrieval, so explicit filename-scoped chunk deletion keeps the corpus and vector index synchronized.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 18-05-2026 20:44
+- **User**: demod-singh.tamang@epita.fr
+- **Prompt**: Explain how an enterprise application isolates vector spaces between different groups or users so data never leaks across sessions. Show me how to dynamically alter the collection initialization parameter inside my VectorStoreManager constructor so that distinct workspaces generate entirely separate database tables.

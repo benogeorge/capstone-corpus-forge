@@ -1,7 +1,11 @@
 import os
 import io
 import unittest
+import tempfile
+from pathlib import Path
 from app import app
+from extractor import safe_read_text, strip_control_characters
+from utils import guard_expanded_bytes
 
 
 class CorpusForgeReliabilityTests(unittest.TestCase):
@@ -79,3 +83,39 @@ class CorpusForgeReliabilityTests(unittest.TestCase):
         response = self.client.post("/chat/query", json=data)
         # Should gracefully return a validation error block
         self.assertEqual(response.status_code, 400)
+
+    def test_safe_read_text_handles_utf8_bom(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = Path(temp_dir) / "bom.txt"
+            file_path.write_bytes(b"\xef\xbb\xbfHello BOM")
+
+            self.assertEqual(safe_read_text(str(file_path)), "Hello BOM")
+
+    def test_safe_read_text_handles_utf16(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = Path(temp_dir) / "utf16.txt"
+            file_path.write_text("Hello UTF-16", encoding="utf-16")
+
+            self.assertEqual(safe_read_text(str(file_path)), "Hello UTF-16")
+
+    def test_safe_read_text_handles_windows_1252(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            file_path = Path(temp_dir) / "cp1252.txt"
+            file_path.write_bytes("Café and quotes ‘single’".encode("cp1252"))
+
+            self.assertEqual(safe_read_text(str(file_path)), "Café and quotes ‘single’")
+
+    def test_strip_control_characters_removes_ansi_and_noise(self):
+        noisy_text = "Report\x1b[31m READY\x1b[0m\x07\x0b with\r\nmacro\x1f metadata"
+
+        self.assertEqual(
+            strip_control_characters(noisy_text),
+            "Report READY with\nmacro metadata",
+        )
+
+    def test_guard_expanded_bytes_aborts_when_limit_is_breached(self):
+        current_total = guard_expanded_bytes(0, "safe chunk", 32)
+        self.assertEqual(current_total, len("safe chunk".encode("utf-8")))
+
+        with self.assertRaises(ValueError):
+            guard_expanded_bytes(current_total, "X" * 100, 32)

@@ -53,3 +53,20 @@ def validate_file_content(file_obj, filename: str) -> tuple[bool, str | None]:
         return False, f"Extension .{ext} does not match actual file type {mime}"
 
     return True, None
+
+
+def guard_expanded_bytes(current_total: int, chunk_text: str, max_bytes: int) -> int:
+    """Abort when extracted text grows beyond the allowed byte budget."""
+
+    if max_bytes <= 0:
+        raise ValueError("max_bytes must be greater than zero")
+
+    chunk_size = len(chunk_text.encode("utf-8", errors="replace"))
+    next_total = current_total + chunk_size
+
+    if next_total > max_bytes:
+        raise ValueError(
+            f"Extracted content exceeds the allowed size limit ({next_total} > {max_bytes} bytes)"
+        )
+
+    return next_total

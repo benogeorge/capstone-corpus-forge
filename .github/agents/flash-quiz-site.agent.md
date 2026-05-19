@@ -1,6 +1,7 @@
 ---
 name: flash-quiz-site
 description: An agent to generate an interactive study tool that helps students learn about software engineering concepts, tailored to the student's codebase. The tool includes flashcards and quizzes based on the student's Python files, with a focus on traceability and contextual questions.
+tools: [read, search, edit, execute]
 ---
 
 

@@ -1,4 +1,7 @@
+import logging
 import os
+import time
+from pathlib import Path
 
 # Disable ChromaDB telemetry to avoid Python 3.14 + protobuf incompatibility
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
@@ -14,6 +17,33 @@ except (ImportError, TypeError) as e:
     print("Please use Python 3.11 or 3.12 for full functionality.")
     chromadb = None
     embedding_functions = None
+
+
+def setup_vector_logger() -> logging.Logger:
+    """Create an isolated file logger for vector-store audit events."""
+
+    logger = logging.getLogger("corpus_forge.vector_store")
+    if logger.handlers:
+        return logger
+
+    logs_dir = Path("logs")
+    logs_dir.mkdir(parents=True, exist_ok=True)
+
+    file_handler = logging.FileHandler(logs_dir / "vector_store.log", encoding="utf-8")
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+        )
+    )
+
+    logger.setLevel(logging.INFO)
+    logger.addHandler(file_handler)
+    logger.propagate = False
+    return logger
+
+
+vector_logger = setup_vector_logger()
 
 
 class VectorStoreManager:
@@ -52,9 +82,11 @@ class VectorStoreManager:
         """
         if self.collection is None:
             # ChromaDB unavailable; silently skip
+            vector_logger.warning("add_document skipped for %s because collection is unavailable", filename)
             return
 
         if not text.strip():
+            vector_logger.info("add_document skipped for %s because extracted text is empty", filename)
             return
 
         # First, remove any existing chunks for this specific file to prevent duplicates
@@ -81,7 +113,17 @@ class VectorStoreManager:
 
         # Add the batch of chunks directly to ChromaDB
         if chunks:
+            start_time = time.perf_counter()
             self.collection.add(documents=chunks, metadatas=metadata_list, ids=ids)
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            vector_logger.info(
+                "add_document filename=%s chunks=%d chunk_size=%d chunk_overlap=%d latency_ms=%.2f",
+                filename,
+                len(chunks),
+                chunk_size,
+                chunk_overlap,
+                elapsed_ms,
+            )
 
     def delete_document(self, filename: str) -> None:
         """Delete all chunks associated with a document.
@@ -91,12 +133,21 @@ class VectorStoreManager:
         """
         if self.collection is None:
             # ChromaDB unavailable; silently skip
+            vector_logger.warning("delete_document skipped for %s because collection is unavailable", filename)
             return
 
         try:
+            start_time = time.perf_counter()
             self.collection.delete(where={"filename": filename})
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            vector_logger.info(
+                "delete_document filename=%s latency_ms=%.2f",
+                filename,
+                elapsed_ms,
+            )
         except Exception as e:
             print(f"Error deleting document {filename} from vector store: {e}")
+            vector_logger.exception("delete_document failed for %s", filename)
 
     def query_context(
         self, active_files: list[str], query_text: str, n_results: int = 5
@@ -115,9 +166,15 @@ class VectorStoreManager:
         """
         if self.collection is None:
             # ChromaDB unavailable; return empty results
+            vector_logger.warning("query_context skipped because collection is unavailable")
             return []
 
         if not active_files or not query_text.strip():
+            vector_logger.info(
+                "query_context skipped because active_files=%d query_empty=%s",
+                len(active_files) if active_files else 0,
+                not query_text.strip(),
+            )
             return []
 
         # Enforce strict metadata filtering so we only search files in the active corpus
@@ -127,9 +184,11 @@ class VectorStoreManager:
             where_filter = {"filename": {"$in": active_files}}
 
         try:
+            start_time = time.perf_counter()
             results = self.collection.query(
                 query_texts=[query_text], n_results=n_results, where=where_filter
             )
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
             # Build structured results
             formatted_results = []
@@ -147,8 +206,17 @@ class VectorStoreManager:
                         }
                     )
 
+            vector_logger.info(
+                "query_context active_files=%d results=%d n_results=%d latency_ms=%.2f",
+                len(active_files),
+                len(formatted_results),
+                n_results,
+                elapsed_ms,
+            )
+
             return formatted_results
 
         except Exception as e:
             print(f"Error querying ChromaDB vector space: {e}")
+            vector_logger.exception("query_context failed for active_files=%d", len(active_files))
             return []

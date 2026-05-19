@@ -17,6 +17,9 @@ app.secret_key = "super_secret_key_for_corpus_forge"
 app.config["UPLOAD_FOLDER"] = "data"
 app.config["MAX_FILE_SIZE"] = 10 * 1024 * 1024
 app.config["MAX_CONTENT_LENGTH"] = 11 * 1024 * 1024
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 

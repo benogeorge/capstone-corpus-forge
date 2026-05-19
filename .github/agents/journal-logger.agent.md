@@ -1,4 +1,5 @@
 ---
+name: journal-logger
 description: 'Updates the JOURNAL.md file after each prompt.'
 
 tools: [vscode, execute, read, agent, browser, edit, search, web, ms-python.python/getPythonEnvironmentInfo, ms-python.python/getPythonExecutableCommand, ms-python.python/installPythonPackage, ms-python.python/configurePythonEnvironment, todo]

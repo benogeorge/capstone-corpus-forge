@@ -8,7 +8,7 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 from werkzeug.utils import secure_filename
 
 from utils import allowed_file, validate_file_content
-from extractor import extract_text_from_file
+from extractor import clean_extracted_text, extract_text_from_file
 from vector_store import VectorStoreManager
 
 # Initialize the store manager helper
@@ -83,7 +83,7 @@ def upload_file():
     file_path = os.path.join(current_app.config["UPLOAD_FOLDER"], filename)
     file.save(file_path)
 
-    extracted_text = extract_text_from_file(file_path)
+    extracted_text = clean_extracted_text(extract_text_from_file(file_path))
     # Automatically index the text chunk embeddings into our vector space
     v_store.add_document(filename, extracted_text)
     flash(
@@ -109,7 +109,7 @@ def delete_file(filename):
     if os.path.exists(file_path) and os.path.isfile(file_path):
         os.remove(file_path)
         # Remove from vector store as well
-        v_store.delete_document(secure_name)
+        v_store.delete_document_chunks(secure_name)
         active_corpus = session.get("active_corpus", [])
         if secure_name in active_corpus:
             session["active_corpus"] = [file for file in active_corpus if file != secure_name]

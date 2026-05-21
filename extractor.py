@@ -44,6 +44,39 @@ def strip_control_characters(text: str) -> str:
     return cleaned_text.strip()
 
 
+def clean_extracted_text(raw_text: str) -> str:
+    """Normalize extracted text before it is embedded into vectors.
+
+    This removes obvious page-number lines and collapses excessive blank-line
+    runs so PDF extraction noise does not pollute embeddings.
+    """
+    if not raw_text:
+        return ""
+
+    normalized_text = raw_text.replace("\r\n", "\n").replace("\r", "\n")
+    cleaned_lines: list[str] = []
+
+    for raw_line in normalized_text.split("\n"):
+        line = raw_line.strip()
+        if not line:
+            cleaned_lines.append("")
+            continue
+
+        compact_line = re.sub(r"\s+", " ", line)
+
+        if re.fullmatch(r"(?:page\s*)?\d+(?:\s*/\s*\d+)?", compact_line, re.IGNORECASE):
+            continue
+
+        if re.fullmatch(r"page\s+\d+(?:\s+of\s+\d+)?", compact_line, re.IGNORECASE):
+            continue
+
+        cleaned_lines.append(compact_line)
+
+    collapsed_text = "\n".join(cleaned_lines)
+    collapsed_text = re.sub(r"\n{3,}", "\n\n", collapsed_text)
+    return collapsed_text.strip()
+
+
 def extract_text_from_txt(file_path: str) -> str:
     return safe_read_text(file_path)
 

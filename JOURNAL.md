@@ -2,7 +2,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 15-05-2026 12:47
-- **User**: redowan-ahmed.sameer@epita.fr
+- **User**: beno.george@epita.fr
 - **Prompt**: Read the agent folder and activate all the agents and instructions
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -12,7 +12,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 15-05-2026 12:50
-- **User**: redowan-ahmed.sameer@epita.fr
+- **User**: beno.george@epita.fr
 - **Prompt**: help me commit once saying first commit on the cloned repo
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -103,7 +103,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how different file encodings and BOMs can corrupt text extraction layers and cause vector embedding mismatches; show a defensive safe_read_text wrapper
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -114,7 +114,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how control characters, ANSI escapes, and macro metadata can pollute vector spaces; add strip_control_characters before chunking
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -125,7 +125,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how compressed payloads can expand into gigabytes during processing; add a real-time expanding-byte validation check
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -136,7 +136,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain the security risk of rendering malicious HTML or JavaScript tags from retrieved RAG chunks in markdown chat logs; add escapeHtml in static/js/chat.js
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini

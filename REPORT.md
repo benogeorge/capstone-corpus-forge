@@ -66,62 +66,52 @@ The HTML files define the actual pages the user sees. The CSS file gives the cha
 
 ### Redowan Ahmed SAMEER
 
-Redowan did a large part of the early application build. Based on the Git history, his work included:
+Redowan worked mainly on the first working version of the application, the ingestion flow, the frontend structure, and the testing base. His work helped turn the project from an idea into a usable Flask application.
 
 - setting up the initial Flask server and upload route
 - adding secure file validation and size limits
-- moving shared validation logic into `utils.py`
-- helping split the app into routes and templates
-- connecting ingestion to vector indexing
-- building and modularizing the chat UI with HTML, CSS, and JavaScript
-- adding reliability tests for normal uploads and defensive failure cases
-- writing early README and report documentation
+- separating shared validation helpers into `utils.py`
+- helping move the project from one large file into routes and templates
+- connecting uploaded files to the vector indexing flow
+- building the main HTML pages for corpus management and chat
+- organizing the chat frontend with CSS and JavaScript files
+- adding reliability tests for normal uploads and failure cases
+- preparing early README and project documentation
 
-This work formed the base application that the rest of the team built on.
+This work gave the team a strong base: users could upload files, manage a corpus, open the chat page, and test important behavior.
 
 ### Demod Singh Tamang
 
-Demod focused mainly on the AI behavior, prompting, and retrieval safety side. Based on the Git history, his work included:
+Demod worked mainly on the AI behavior, prompt design, retrieval safety, and session logic. His work helped make the chat side more reliable and more aligned with the course focus on AI-assisted software development.
 
 - implementing the dynamic system instruction builder
 - adding grounding guardrails to reduce hallucination
-- working through chat memory and session behavior
-- exploring streaming versus normal JSON responses
-- adding validation around empty active corpus queries
-- improving PDF text-cleaning ideas
-- reviewing prompt injection risks
-- adding retry and rate-limit handling patterns
+- improving chat memory and session behavior
+- comparing streaming responses with normal JSON responses
+- validating empty active corpus queries before vector search
+- improving PDF extraction and text-cleaning ideas
+- reviewing prompt injection risks and defensive patterns
+- exploring retry and rate-limit handling for API calls
 - keeping deleted files and vector chunks synchronized
 - adding workspace-level vector collection isolation
 
-This work made the AI side safer and closer to the course expectations around responsible AI-assisted software development.
+This work made the AI features safer: the app became better at refusing weak context, keeping user sessions separate, and avoiding stale vector data.
 
 ### Beno GEORGE
 
-Beno worked on both code and final integration. His work was not only reporting. Based on the Git history, Beno contributed to the safety, reliability, frontend behavior, logging, and final repository state of the project.
-
-His code-level work included:
+Beno worked on code reliability, extraction safety, frontend behavior, vector logging, final integration, and submission cleanup. His work helped make the app more defensive and made sure the final version was pushed to the correct shared repository.
 
 - improving `extractor.py` with safer text reading for UTF-8 BOM, UTF-16, Windows-1252, and fallback encodings
-- adding control-character and ANSI escape cleanup before text is sent into chunking and embeddings
-- adding expanded-byte protection so compressed or unusual documents cannot silently expand into very large text payloads
-- adding regression tests in `test_suite.py` for encoding handling, control-character cleanup, and expanded-byte limits
-- improving `static/js/chat.js` so retrieved text is displayed safely and HTML-like content cannot be rendered as active markup
-- adding frontend timeout behavior, loading states, and a retry path so the chat page does not stay stuck forever if a backend or API request hangs
-- adding vector-store audit logging in `vector_store.py` so add, delete, and query operations are recorded with useful counts and timing information
-- fixing the missing `re` import in `vector_store.py`, which was needed for scoped collection names
+- cleaning control characters and ANSI escape sequences before chunking and embeddings
+- adding expanded-byte protection for compressed or unusual documents
+- adding regression tests for encodings, control cleanup, and expanded-byte limits
+- improving `static/js/chat.js` with safe rendering for retrieved text
+- adding frontend timeout, loading, and retry behavior for stuck requests
+- adding vector-store audit logging for add, delete, and query operations
+- fixing scoped vector collection naming and final import issues
+- rewriting and finalizing the report, journal details, and shared GitHub submission state
 
-His integration and submission work included:
-
-- reviewing the README, report, journal, and prompt-history files before submission
-- rewriting the final report in a more human and complete style
-- adding the final team member details
-- checking commits from the Beno GitHub account and making sure the work was pushed to the shared `demod-s-tmg/capstone-corpus-forge` repository
-- merging and preserving work that had first been made from Beno's fork so the shared repository stayed up to date
-- doing final Git cleanup so the latest work was not left only on the personal fork
-- syncing and pushing final commits to the shared repository
-
-This work improved the app's safety and reliability while also making sure the final submission was complete in the correct GitHub repository.
+This work improved the app's reliability: extraction became safer, the chat UI handled failures better, and the final version was kept consistent in `demod-s-tmg/capstone-corpus-forge`.
 
 ## AI Collaboration
 

@@ -2,8 +2,9 @@
 
 ## Team Members
 
-- Name, EPITA email, GitHub username
-- Name, EPITA email, GitHub username
+- Beno GEORGE, BENO.GEORGE@EPITA.FR, benogeorge
+- Redowan Ahmed SAMEER, redowan-ahmed.sameer@epita.fr, SameerAhmed772
+- Demod Singh Tamang, Demod-singh.tamang@epita.fr, demod-s-tmg
 
 ## Initial Design
 

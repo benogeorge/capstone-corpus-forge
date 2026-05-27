@@ -56,6 +56,12 @@ The app does not query every uploaded file every time. It only searches files se
 
 We added checks for empty questions, missing JSON fields, empty active corpus, and weak retrieved context. The goal was to avoid giving fake answers when the app did not have enough information.
 
+### Frontend Structure
+
+The frontend was kept simple and readable. The corpus management page is in `templates/index.html`, and the chat page is in `templates/chat.html`. The chat styling is separated into `static/css/chat.css`, and the browser behavior is handled in `static/js/chat.js`.
+
+The HTML files define the actual pages the user sees. The CSS file gives the chat workspace a cleaner interface, with panels, message bubbles, buttons, and responsive spacing. The JavaScript file handles form submission, sends chat requests to the Flask backend, shows user and assistant messages, escapes unsafe text before displaying it, manages loading states, and gives the user a retry button if a request times out.
+
 ## Who Did What
 
 ### Redowan Ahmed SAMEER
@@ -92,11 +98,15 @@ This work made the AI side safer and closer to the course expectations around re
 
 ### Beno GEORGE
 
-Beno focused on final integration, cleanup, reporting, and repository consistency. Based on the Git history, his work included:
+Beno focused on final integration, cleanup, reporting, repository consistency, and the final GitHub submission state. Based on the Git history, his work included:
 
 - reviewing and finalizing the project report
 - adding the final team member details
 - fixing the missing `re` import in `vector_store.py`
+- reviewing the README, report, journal, and prompt-history files before submission
+- checking commits from the Beno GitHub account and making sure the final work was pushed to the shared `demod-s-tmg/capstone-corpus-forge` repository
+- merging and preserving work that had first been made from Beno's fork so the shared repository stayed up to date
+- doing final Git cleanup so the latest work was not left only on the personal fork
 - syncing and pushing final commits to the shared `demod-s-tmg/capstone-corpus-forge` repository
 - checking the final state of the project and keeping the submission files consistent
 

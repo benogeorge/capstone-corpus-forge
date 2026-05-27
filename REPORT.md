@@ -98,19 +98,30 @@ This work made the AI side safer and closer to the course expectations around re
 
 ### Beno GEORGE
 
-Beno focused on final integration, cleanup, reporting, repository consistency, and the final GitHub submission state. Based on the Git history, his work included:
+Beno worked on both code and final integration. His work was not only reporting. Based on the Git history, Beno contributed to the safety, reliability, frontend behavior, logging, and final repository state of the project.
 
-- reviewing and finalizing the project report
-- adding the final team member details
-- fixing the missing `re` import in `vector_store.py`
+His code-level work included:
+
+- improving `extractor.py` with safer text reading for UTF-8 BOM, UTF-16, Windows-1252, and fallback encodings
+- adding control-character and ANSI escape cleanup before text is sent into chunking and embeddings
+- adding expanded-byte protection so compressed or unusual documents cannot silently expand into very large text payloads
+- adding regression tests in `test_suite.py` for encoding handling, control-character cleanup, and expanded-byte limits
+- improving `static/js/chat.js` so retrieved text is displayed safely and HTML-like content cannot be rendered as active markup
+- adding frontend timeout behavior, loading states, and a retry path so the chat page does not stay stuck forever if a backend or API request hangs
+- adding vector-store audit logging in `vector_store.py` so add, delete, and query operations are recorded with useful counts and timing information
+- fixing the missing `re` import in `vector_store.py`, which was needed for scoped collection names
+
+His integration and submission work included:
+
 - reviewing the README, report, journal, and prompt-history files before submission
-- checking commits from the Beno GitHub account and making sure the final work was pushed to the shared `demod-s-tmg/capstone-corpus-forge` repository
+- rewriting the final report in a more human and complete style
+- adding the final team member details
+- checking commits from the Beno GitHub account and making sure the work was pushed to the shared `demod-s-tmg/capstone-corpus-forge` repository
 - merging and preserving work that had first been made from Beno's fork so the shared repository stayed up to date
 - doing final Git cleanup so the latest work was not left only on the personal fork
-- syncing and pushing final commits to the shared `demod-s-tmg/capstone-corpus-forge` repository
-- checking the final state of the project and keeping the submission files consistent
+- syncing and pushing final commits to the shared repository
 
-This work helped bring the project into a cleaner final submission state.
+This work improved the app's safety and reliability while also making sure the final submission was complete in the correct GitHub repository.
 
 ## AI Collaboration
 

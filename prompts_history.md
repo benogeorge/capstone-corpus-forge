@@ -78,3 +78,6 @@
 ### 28-05-2026 10:13
 - **Prompt**: can u add also token useage and realtime update of this feature? also add promots sent each msg = 1 prompt
 
+### 28-05-2026 10:16
+- **Prompt**: for quiz and flashcards, can u get better UI like Gemini or Chatgpt woudl give
+

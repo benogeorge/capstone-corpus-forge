@@ -155,7 +155,8 @@
         <section class="panel">
             <h2>Upload Document</h2>
             <form action="{{ url_for('ingestion.upload_file') }}" method="post" enctype="multipart/form-data">
-                <input type="file" name="document" required />
+                <input type="file" name="document" accept=".txt,.md,.pdf,.py,.js" required />
+                <div style="font-size:12px;color:var(--muted);margin:6px 0;">Max file size: 10 MB. Allowed: .txt, .md, .pdf, .py, .js</div>
                 <button type="submit">Upload</button>
             </form>
         </section>

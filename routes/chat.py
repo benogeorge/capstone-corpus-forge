@@ -22,11 +22,44 @@ except Exception:
     genai = None
 from flask import Blueprint, jsonify, render_template, request, session
 
+from utils import build_system_instruction
 from vector_store import VectorStoreManager
 
 
 chat_bp = Blueprint("chat", __name__)
 v_store = VectorStoreManager()
+CHAT_HISTORY_SESSION_KEY = "chat_history"
+CHAT_HISTORY_STORAGE_LIMIT = 20
+CHAT_HISTORY_WINDOW = 5
+
+# --- Session usage tracking helpers ----------------------------------
+def _estimate_tokens_for_text(text: str) -> int:
+    """Rudimentary token estimation: chars / 4 (round down) with minimum 1 for non-empty strings.
+
+    This is an inexpensive approximation useful for local quotas and UI feedback.
+    """
+    if not text:
+        return 0
+    return max(1, len(text) // 4)
+
+
+def _increment_prompt_and_tokens(prompt_text: str = "", response_text: str = ""):
+    """Increment session counters: one prompt per call and estimated tokens for prompt+response.
+
+    Returns the new prompt_count and token_usage values.
+    """
+    prompt_count = session.get("prompt_count", 0) + 1
+    token_usage = session.get("token_usage", 0)
+
+    token_usage += _estimate_tokens_for_text(prompt_text)
+    token_usage += _estimate_tokens_for_text(response_text)
+
+    session["prompt_count"] = prompt_count
+    session["token_usage"] = token_usage
+    session.modified = True
+    return prompt_count, token_usage
+
+# ---------------------------------------------------------------------
 
 # Configure the OpenAI client (kept as fallback) and the Gemini client
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -75,7 +108,11 @@ def _normalize_model_name(model_name: str) -> str:
 
 def _resolve_gemini_model(gemini_mod):
     """Choose an available generateContent-capable model for the current API key."""
+    # Prefer newer flash-family models (3.1/3.x series first), then fall back to older flash models.
     preferred_models = [
+        "gemini-3.1-flash-lite",
+        "gemini-3.1-flash",
+        "gemini-3.0-flash",
         "gemini-2.5-flash",
         "gemini-2.0-flash",
         "gemini-flash-latest",
@@ -95,6 +132,13 @@ def _resolve_gemini_model(gemini_mod):
 
     available_models = [m for m in available_models if m]
 
+    # Allow environment override: set GEMINI_MODEL to force a model name (exact match after normalization)
+    env_choice = os.environ.get("GEMINI_MODEL") or os.environ.get("PREFERRED_GEMINI_MODEL")
+    if env_choice:
+        env_choice_norm = _normalize_model_name(env_choice)
+        if env_choice_norm in available_models:
+            return env_choice_norm, available_models
+
     for preferred in preferred_models:
         if preferred in available_models:
             return preferred, available_models
@@ -103,6 +147,52 @@ def _resolve_gemini_model(gemini_mod):
         return available_models[0], available_models
 
     return "gemini-2.0-flash", available_models
+
+
+def _normalize_chat_message(message):
+    """Return a session-safe Gemini message dict or None if malformed."""
+    if not isinstance(message, dict):
+        return None
+
+    role = (message.get("role") or "").strip()
+    parts = message.get("parts") or []
+
+    if isinstance(parts, str):
+        parts = [parts]
+
+    cleaned_parts = [str(part).strip() for part in parts if str(part).strip()]
+    if role not in {"user", "model"} or not cleaned_parts:
+        return None
+
+    return {"role": role, "parts": cleaned_parts}
+
+
+def _load_chat_history():
+    """Load and sanitize the session chat history."""
+    raw_history = session.get(CHAT_HISTORY_SESSION_KEY, [])
+    return [message for message in (_normalize_chat_message(item) for item in raw_history) if message]
+
+
+def _store_chat_history(history):
+    """Persist a bounded chat history back into the Flask session."""
+    session[CHAT_HISTORY_SESSION_KEY] = history[-CHAT_HISTORY_STORAGE_LIMIT:]
+    session.modified = True
+
+
+def _append_chat_message(role, text):
+    """Append a single message to session history and keep the store bounded."""
+    history = _load_chat_history()
+    history.append({"role": role, "parts": [text]})
+    _store_chat_history(history)
+
+
+def _recent_chat_history(history=None, limit=CHAT_HISTORY_WINDOW):
+    """Return the latest messages to send to Gemini.
+
+    When history is omitted, the current Flask session store is used.
+    """
+    source_history = _load_chat_history() if history is None else history
+    return source_history[-limit:]
 
 
 @chat_bp.route("/")
@@ -125,11 +215,32 @@ def query():
     Expects JSON body with keys: 'question', 'tone', 'audience', 'task'.
     Returns JSON with model response plus source trace metadata.
     """
-    data = request.get_json(silent=True) or {}
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({
+            "error": "Invalid JSON payload.",
+            "debug": "Expected a JSON object body with question, tone, and audience keys."
+        }), 400
+
+    required_keys = ["question", "tone", "audience"]
+    missing_keys = [key for key in required_keys if key not in data]
+    if missing_keys:
+        return jsonify({
+            "error": "Incomplete JSON payload.",
+            "debug": f"Missing required keys: {', '.join(missing_keys)}.",
+            "received_keys": sorted(list(data.keys())),
+        }), 400
+
     user_question = (data.get("question") or "").strip()
     tone = (data.get("tone") or "professional").strip()
     audience = (data.get("audience") or "general").strip()
     task = (data.get("task") or "explain").strip()
+
+    if not user_question:
+        return jsonify({
+            "error": "Question cannot be empty.",
+            "debug": "The question key was present but its value was blank or whitespace."
+        }), 400
 
     if not user_question:
         return jsonify({"error": "Question cannot be empty."}), 400
@@ -221,11 +332,12 @@ def query():
         pass
 
     # Build grounded prompts
-    system_prompt = f"You are a helpful assistant with access to document context.\n- Tone: {tone}\n- Audience: {audience}\n- Task: {task}\n\nProvide clear, accurate answers based on the provided context. If the context doesn't contain the answer, acknowledge that and offer what you can."
+    system_prompt = build_system_instruction(tone, audience, task)
 
     user_prompt = f"Context from documents:\n{context_text}\n\nUser question: {user_question}\n\nPlease answer the question based on the context above."
 
-    full_input = f"{system_prompt}\n\n{user_prompt}"
+    recent_history = _recent_chat_history()
+    gemini_contents = recent_history + [{"role": "user", "parts": [user_prompt]}]
 
     # Resolve a compatible model for the current key/API version
     model_name, available_models = _resolve_gemini_model(gemini_mod)
@@ -235,8 +347,11 @@ def query():
     try:
         # Official google-generativeai path
         if hasattr(gemini_mod, "GenerativeModel"):
-            model = gemini_mod.GenerativeModel(model_name)
-            resp = model.generate_content(full_input)
+            try:
+                model = gemini_mod.GenerativeModel(model_name, system_instruction=system_prompt)
+            except TypeError:
+                model = gemini_mod.GenerativeModel(model_name)
+            resp = model.generate_content(gemini_contents)
             ai_output = getattr(resp, "text", None)
             if not ai_output and getattr(resp, "candidates", None):
                 parts = []
@@ -253,14 +368,18 @@ def query():
 
         # Compatibility path used by some newer SDK variants
         elif hasattr(gemini_mod, "generate"):
-            resp = gemini_mod.generate(model=model_name, input=full_input)
+            resp = gemini_mod.generate(model=model_name, input=gemini_contents)
             ai_output = getattr(resp, "output_text", None) or getattr(resp, "text", None)
             if not ai_output and getattr(resp, "candidates", None):
                 ai_output = getattr(resp.candidates[0], "text", None)
 
         # Legacy fallback: genai.chat.create
         elif hasattr(gemini_mod, "chat") and hasattr(gemini_mod.chat, "create"):
-            resp = gemini_mod.chat.create(model=model_name, messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}])
+            messages = [{"role": "system", "content": system_prompt}]
+            for message in recent_history:
+                messages.append({"role": message["role"], "content": "\n".join(message["parts"])})
+            messages.append({"role": "user", "content": user_prompt})
+            resp = gemini_mod.chat.create(model=model_name, messages=messages)
             ai_output = getattr(resp, "output", None) or getattr(resp, "content", None)
             if isinstance(ai_output, list):
                 ai_output = "\n".join([getattr(x, "content", x) for x in ai_output])
@@ -275,6 +394,15 @@ def query():
     if not ai_output:
         ai_output = "No response generated."
 
+    _append_chat_message("user", user_prompt)
+    _append_chat_message("model", ai_output)
+    # Track prompt count and an estimated token usage for UI/quota purposes
+    try:
+        _increment_prompt_and_tokens(prompt_text=user_prompt, response_text=ai_output)
+    except Exception:
+        # Do not fail the request if session tracking encounters an issue
+        pass
+
     return jsonify(
         {
             "response": ai_output,
@@ -283,3 +411,135 @@ def query():
             "source_chunks": source_chunks,
         }
     )
+
+
+@chat_bp.route("/generate/flashcards", methods=["POST"])
+def generate_flashcards():
+    """Generate concise flashcards from the active corpus for study/review."""
+    data = request.get_json(silent=True) or {}
+    question = (data.get("question") or "Create study flashcards").strip()
+    tone = (data.get("tone") or "concise").strip()
+    audience = (data.get("audience") or "student").strip()
+
+    vs = VectorStoreManager()
+    active_corpus = session.get("active_corpus", [])
+    if not active_corpus:
+        return jsonify({"error": "No documents selected. Please select files to query."}), 400
+
+    context_chunks = vs.query_context(active_files=active_corpus, query_text=question, n_results=8)
+    if not context_chunks:
+        return jsonify({"error": "No relevant content found in selected documents."}), 400
+
+    context_text = "\n\n".join([f"[{c.get('filename')}]\n{c.get('document')}" for c in context_chunks])
+
+    gemini_mod = _get_gemini_module()
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if not gemini_key or gemini_mod is None:
+        return jsonify({"error": "GEMINI_API_KEY not set or google.generativeai not installed."}), 500
+
+    try:
+        if hasattr(gemini_mod, "configure"):
+            gemini_mod.configure(api_key=gemini_key)
+    except Exception:
+        pass
+
+    prompt = (
+        f"You are an educational assistant. Produce 8 concise flashcards (question -> short answer) "
+        f"for a {audience} person in a {tone} style, based ONLY on the context below. Do NOT invent facts.\n\n"
+        f"Context:\n{context_text}\n\nInstructions: Return each flashcard on its own line in the format 'Q: ... | A: ...'."
+    )
+
+    try:
+        model_name, _ = _resolve_gemini_model(gemini_mod)
+        if hasattr(gemini_mod, "generate"):
+            resp = gemini_mod.generate(model=model_name, input=[{"role": "user", "content": prompt}])
+            text = getattr(resp, "output_text", None) or getattr(resp, "text", None)
+        elif hasattr(gemini_mod, "GenerativeModel"):
+            model = gemini_mod.GenerativeModel(model_name)
+            resp = model.generate_content([{"role": "user", "parts": [prompt]}])
+            text = getattr(resp, "text", None)
+        else:
+            return jsonify({"error": "google.generativeai SDK does not expose a compatible generation method."}), 500
+    except Exception as e:
+        return jsonify({"error": f"Generation failed: {e}"}), 500
+
+    if not text:
+        return jsonify({"error": "No response generated."}), 500
+
+    # Track prompt + tokens
+    try:
+        _increment_prompt_and_tokens(prompt_text=prompt, response_text=text)
+    except Exception:
+        pass
+
+    return jsonify({"response": text})
+
+
+@chat_bp.route("/generate/quiz", methods=["POST"])
+def generate_quiz():
+    """Generate a short multiple-choice quiz from selected documents."""
+    data = request.get_json(silent=True) or {}
+    question = (data.get("question") or "Create a short quiz").strip()
+    num_questions = int(data.get("num_questions") or 5)
+
+    vs = VectorStoreManager()
+    active_corpus = session.get("active_corpus", [])
+    if not active_corpus:
+        return jsonify({"error": "No documents selected. Please select files to query."}), 400
+
+    context_chunks = vs.query_context(active_files=active_corpus, query_text=question, n_results=10)
+    if not context_chunks:
+        return jsonify({"error": "No relevant content found in selected documents."}), 400
+
+    context_text = "\n\n".join([f"[{c.get('filename')}]\n{c.get('document')}" for c in context_chunks])
+
+    gemini_mod = _get_gemini_module()
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if not gemini_key or gemini_mod is None:
+        return jsonify({"error": "GEMINI_API_KEY not set or google.generativeai not installed."}), 500
+
+    try:
+        if hasattr(gemini_mod, "configure"):
+            gemini_mod.configure(api_key=gemini_key)
+    except Exception:
+        pass
+
+    prompt = (
+        f"You are an educational assistant. Based ONLY on the context below, generate {num_questions} multiple-choice questions. "
+        f"Each question should have 4 options labeled A-D and indicate the correct answer. Keep questions concise.\n\n"
+        f"Context:\n{context_text}\n\nInstructions: Return as numbered list: '1) Question? A) ... B) ... C) ... D) ... | Answer: B'"
+    )
+
+    try:
+        model_name, _ = _resolve_gemini_model(gemini_mod)
+        if hasattr(gemini_mod, "generate"):
+            resp = gemini_mod.generate(model=model_name, input=[{"role": "user", "content": prompt}])
+            text = getattr(resp, "output_text", None) or getattr(resp, "text", None)
+        elif hasattr(gemini_mod, "GenerativeModel"):
+            model = gemini_mod.GenerativeModel(model_name)
+            resp = model.generate_content([{"role": "user", "parts": [prompt]}])
+            text = getattr(resp, "text", None)
+        else:
+            return jsonify({"error": "google.generativeai SDK does not expose a compatible generation method."}), 500
+    except Exception as e:
+        return jsonify({"error": f"Generation failed: {e}"}), 500
+
+    if not text:
+        return jsonify({"error": "No response generated."}), 500
+
+    try:
+        _increment_prompt_and_tokens(prompt_text=prompt, response_text=text)
+    except Exception:
+        pass
+
+    return jsonify({"response": text})
+
+
+
+@chat_bp.route("/stats", methods=["GET"])
+def stats():
+    """Return real-time session usage stats: prompt count and estimated token usage."""
+    return jsonify({
+        "prompt_count": session.get("prompt_count", 0),
+        "token_usage_estimate": session.get("token_usage", 0),
+    })

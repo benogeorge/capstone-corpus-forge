@@ -2,7 +2,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 15-05-2026 12:47
-- **User**: redowan-ahmed.sameer@epita.fr
+- **User**: beno.george@epita.fr
 - **Prompt**: Read the agent folder and activate all the agents and instructions
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -12,7 +12,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 15-05-2026 12:50
-- **User**: redowan-ahmed.sameer@epita.fr
+- **User**: beno.george@epita.fr
 - **Prompt**: help me commit once saying first commit on the cloned repo
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -103,7 +103,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how different file encodings and BOMs can corrupt text extraction layers and cause vector embedding mismatches; show a defensive safe_read_text wrapper
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -114,7 +114,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how control characters, ANSI escapes, and macro metadata can pollute vector spaces; add strip_control_characters before chunking
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -125,7 +125,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain how compressed payloads can expand into gigabytes during processing; add a real-time expanding-byte validation check
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -136,7 +136,7 @@
 ### **New Interaction**
 - **Agent Version**: 2.3
 - **Date**: 19-05-2026 00:00
-- **User**: Copilot user
+- **User**: beno.george@epita.fr
 - **Prompt**: explain the security risk of rendering malicious HTML or JavaScript tags from retrieved RAG chunks in markdown chat logs; add escapeHtml in static/js/chat.js
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
@@ -194,7 +194,74 @@
 - **User**: beno.george@epita.fr
 - **Prompt**: push commit
 - **CoPilot Mode**: Agent
-- **CoPilot Model**: GPT-5.4 mini
+- **CoPilot Model**: GPT-5.4 mini 
 - **Socratic Mode**: ON
 - **Changes Made**: No code changes; preparing the repository for commit and push.
 - **Context and Reasons for Changes**: The user asked to push the current commit state, so the interaction must be logged before performing the git operation.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 27-05-2026 00:00
+- **User**: beno.george@epita.fr
+- **Prompt**: help me do the report make one push commit
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Drafted the project report in REPORT.md with repo-specific architecture, security, AI collaboration, and lessons learned sections, and prepared the repository for a single commit and push.
+- **Context and Reasons for Changes**: The user asked for report help and a one-shot push commit, so the report needed to be completed and logged before the git operation.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 27-05-2026 00:00
+- **User**: beno.george@epita.fr
+- **Prompt**: final check
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Final report check before commit.
+- **Context and Reasons for Changes**: User requested a final check and commit.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 27-05-2026 00:00
+- **User**: beno.george@epita.fr
+- **Prompt**: commit
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Added a minimal commit prompt entry to JOURNAL.md.
+- **Context and Reasons for Changes**: User requested an additional prompt entry like the previous commit-style journal entry.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 28-05-2026 09:56
+- **User**: redowan-ahmed.sameer@epita.fr
+- **Prompt**: why are the tests not running?
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
+- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
+
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 28-05-2026 10:33
+- **User**: redowan-ahmed.sameer@epita.fr
+- **Prompt**: run it
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
+- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 28-05-2026 10:56
+- **User**: redowan-ahmed.sameer@epita.fr
+- **Prompt**: unknown
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
+- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.

@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import time
 from pathlib import Path
 
@@ -8,6 +9,7 @@ os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
 try:
     import chromadb
+    from chromadb.config import Settings
     from chromadb.utils import embedding_functions
 except (ImportError, TypeError) as e:
     # Python 3.14+ has protobuf incompatibility with ChromaDB
@@ -16,6 +18,7 @@ except (ImportError, TypeError) as e:
     print("ChromaDB vector storage will not be available.")
     print("Please use Python 3.11 or 3.12 for full functionality.")
     chromadb = None
+    Settings = None
     embedding_functions = None
 
 
@@ -51,6 +54,7 @@ class VectorStoreManager:
         self,
         db_path: str = "chroma_db",
         collection_name: str = "corpus_forge_collection",
+        workspace_scope: str | None = None,
     ):
         """Initializes a persistent local ChromaDB client and collection."""
         if chromadb is None:
@@ -63,15 +67,38 @@ class VectorStoreManager:
         os.makedirs(db_path, exist_ok=True)
 
         # Initialize persistent client on your local machine
-        self.client = chromadb.PersistentClient(path=db_path)
+        # Explicitly disable anonymized telemetry to avoid posthog API mismatch noise.
+        client_settings = Settings(anonymized_telemetry=False) if Settings else None
+        self.client = chromadb.PersistentClient(path=db_path, settings=client_settings)
+
+        # Allow each workspace or tenant to get its own isolated collection.
+        resolved_collection_name = self._build_scoped_collection_name(
+            collection_name=collection_name,
+            workspace_scope=workspace_scope,
+        )
 
         # Use ChromeDB's default embedding function (all-MiniLM-L6-v2)
         self.embedding_function = embedding_functions.DefaultEmbeddingFunction()
 
         # Get or create the collection
         self.collection = self.client.get_or_create_collection(
-            name=collection_name, embedding_function=self.embedding_function
+            name=resolved_collection_name, embedding_function=self.embedding_function
         )
+
+    @staticmethod
+    def _build_scoped_collection_name(
+        collection_name: str, workspace_scope: str | None = None
+    ) -> str:
+        """Build a stable, isolated collection name for a workspace or tenant."""
+        scope_source = workspace_scope or os.environ.get("CORPUS_FORGE_WORKSPACE")
+        if not scope_source:
+            return collection_name
+
+        safe_scope = re.sub(r"[^a-zA-Z0-9_-]+", "_", scope_source.strip()).strip("_")
+        if not safe_scope:
+            return collection_name
+
+        return f"{collection_name}__{safe_scope}"
 
     def add_document(
         self, filename: str, text: str, chunk_size: int = 1000, chunk_overlap: int = 200
@@ -125,8 +152,8 @@ class VectorStoreManager:
                 elapsed_ms,
             )
 
-    def delete_document(self, filename: str) -> None:
-        """Delete all chunks associated with a document.
+    def delete_document_chunks(self, filename: str) -> None:
+        """Delete all chunks associated with a document filename.
 
         Args:
             filename: Name of the document to delete.

@@ -66,6 +66,14 @@
                 </select>
             </section>
 
+            <section class="panel">
+                <h2>Usage</h2>
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <div>Prompts sent: <strong id="promptCount">0</strong></div>
+                    <div>Estimated tokens: <strong id="tokenUsage">0</strong></div>
+                </div>
+            </section>
+
             <section class="panel corpus-panel">
                 <h2>Active Corpus</h2>
                 <ul class="corpus-list" aria-live="polite">
@@ -104,6 +112,10 @@
                 <div class="composer-actions">
                     <span class="composer-hint">Press Enter to send, Shift+Enter for a newline.</span>
                     <button id="sendButton" type="submit">Send Prompt</button>
+                    <button id="flashcardButton" type="button">Generate Flashcards</button>
+                    <label for="quizCount" style="margin-left:8px;">Quiz Qs</label>
+                    <input id="quizCount" type="number" min="1" max="20" value="5" style="width:64px;margin-left:6px;" />
+                    <button id="quizButton" type="button">Generate Quiz</button>
                 </div>
             </form>
         </section>

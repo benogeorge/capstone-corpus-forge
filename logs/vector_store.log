@@ -1,0 +1,7 @@
+2026-05-28 09:57:11,437 | INFO | corpus_forge.vector_store | add_document filename=sample.txt chunks=1 chunk_size=1000 chunk_overlap=200 latency_ms=1642.77
+2026-05-28 10:01:17,316 | INFO | corpus_forge.vector_store | add_document filename=BAT_memo.pdf chunks=6 chunk_size=1000 chunk_overlap=200 latency_ms=2766.27
+2026-05-28 10:06:49,688 | INFO | corpus_forge.vector_store | add_document filename=test_upload.txt chunks=1 chunk_size=1000 chunk_overlap=200 latency_ms=1970.50
+2026-05-28 10:13:55,862 | INFO | corpus_forge.vector_store | query_context active_files=1 results=6 n_results=8 latency_ms=1894.73
+2026-05-28 10:14:31,849 | INFO | corpus_forge.vector_store | query_context active_files=1 results=6 n_results=10 latency_ms=1702.58
+2026-05-28 10:18:29,607 | INFO | corpus_forge.vector_store | query_context active_files=1 results=6 n_results=8 latency_ms=1904.12
+2026-05-28 10:20:34,584 | INFO | corpus_forge.vector_store | query_context active_files=1 results=6 n_results=8 latency_ms=1625.17

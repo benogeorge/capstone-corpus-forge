@@ -89,6 +89,11 @@ def upload_file():
     flash(
         f"File {filename} successfully uploaded and extracted ({len(extracted_text)} characters)."
     )
+    # Auto-add uploaded file to the active corpus so users can immediately query it
+    active_corpus = session.get("active_corpus", [])
+    if filename not in active_corpus:
+        active_corpus.append(filename)
+        session["active_corpus"] = active_corpus
     return redirect(url_for("ingestion.index"))
 
 

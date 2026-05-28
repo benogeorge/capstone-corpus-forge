@@ -352,3 +352,48 @@ body {
         min-height: 70vh;
     }
 }
+
+/* Flashcards & Quiz UI */
+.flashcards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+.flashcard {
+    background: linear-gradient(180deg, #0f2240 0%, #081229 100%);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 6px 18px rgba(3,10,25,0.6);
+}
+.flashcard .q {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.flashcard .a {
+    display: none;
+    color: var(--text-secondary);
+}
+.flashcard .reveal {
+    margin-top: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.quiz {
+    margin-top: 8px;
+}
+.quiz .question {
+    border: 1px solid rgba(255,255,255,0.03);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+.quiz .options { margin-top: 8px; display:flex; flex-direction:column; gap:6px; }
+.quiz .check { margin-top:8px; }
+.quiz .correct { border-left: 4px solid var(--success); padding-left: 8px; }
+.quiz .incorrect { border-left: 4px solid var(--danger); padding-left: 8px; }

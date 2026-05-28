@@ -54,3 +54,6 @@
 ### 28-05-2026 09:56
 - **Prompt**: why not running
 
+### 28-05-2026 09:58
+- **Prompt**: [Running] python -u "/Users/yuun/Documents/AI4SE/capstone-corpus-forge/app.py" /bin/sh: python: command not found  [Done] exited with code=127 in 0.015 seconds   What is the issue?
+

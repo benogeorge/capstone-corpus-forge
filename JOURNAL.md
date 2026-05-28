@@ -236,7 +236,18 @@
 - **Agent Version**: 2.3
 - **Date**: 28-05-2026 09:56
 - **User**: redowan-ahmed.sameer@epita.fr
-- **Prompt**: why not running
+- **Prompt**: why are the tests not running?
+- **CoPilot Mode**: Agent
+- **CoPilot Model**: GPT-5.4 mini
+- **Socratic Mode**: ON
+- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
+- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
+
+### **New Interaction**
+- **Agent Version**: 2.3
+- **Date**: 28-05-2026 09:58
+- **User**: redowan-ahmed.sameer@epita.fr
+- **Prompt**: [Running] python -u "/Users/yuun/Documents/AI4SE/capstone-corpus-forge/app.py" /bin/sh: python: command not found  [Done] exited with code=127 in 0.015 seconds   What is the issue?
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
 - **Socratic Mode**: ON

@@ -75,3 +75,6 @@
 ### 28-05-2026 10:11
 - **Prompt**: run it
 
+### 28-05-2026 10:13
+- **Prompt**: can u add also token useage and realtime update of this feature? also add promots sent each msg = 1 prompt
+

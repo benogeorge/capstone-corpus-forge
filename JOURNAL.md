@@ -246,42 +246,9 @@
 
 ### **New Interaction**
 - **Agent Version**: 2.3
-- **Date**: 28-05-2026 10:04
+- **Date**: 28-05-2026 10:13
 - **User**: redowan-ahmed.sameer@epita.fr
-- **Prompt**: [Terminal 484d26e6-f9cc-45d1-b77e-d90e70d953c8 notification: command completed with exit code 1. Use send_to_terminal to send another command or kill_terminal to stop it.] Terminal output: yuun@Redowans-MacBook-Air capstone-corpus-forge %  /Users/yuun/Documents/AI4SE/capstone-corpus-forge/.venv/bin/python -u app.py  * Serving Flask app 'app'  * Debug mode: on WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.  * Running on http://127.0.0.1:5000 Press CTRL+C to quit  * Restarting with stat  * Debugger is active!  * Debugger PIN: 104-060-512 127.0.0.1 - - [28/May/2026 10:00:13] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:00:13] "GET /favicon.ico HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:00:51] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:00:51] "GET /favicon.ico HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:00:58] "POST /upload HTTP/1.1" 413 - 127.0.0.1 - - [28/May/2026 10:01:02] "POST /upload HTTP/1.1" 413 - 127.0.0.1 - - [28/May/2026 10:01:04] "POST /upload HTTP/1.1" 413 - 127.0.0.1 - - [28/May/2026 10:01:17] "POST /upload HTTP/1.1" 302 - 127.0.0.1 - - [28/May/2026 10:01:17] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:19] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:20] "GET /static/css/chat.css HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:20] "GET /static/js/chat.js HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:37] "POST /chat/query HTTP/1.1" 400 - 127.0.0.1 - - [28/May/2026 10:01:46] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:46] "GET /static/js/chat.js HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:01:46] "GET /static/css/chat.css HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:01:54] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:01:54] "GET /static/css/chat.css HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:01:54] "GET /static/js/chat.js HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:02:00] "POST /chat/query HTTP/1.1" 400 - 127.0.0.1 - - [28/May/2026 10:02:02] "POST /chat/query HTTP/1.1" 400 - 127.0.0.1 - - [28/May/2026 10:02:03] "POST /chat/query HTTP/1.1" 400 - 127.0.0.1 - - [28/May/2026 10:02:03] "POST /chat/query HTTP/1.1" 400 -  * Detected change in '/Users/yuun/Documents/AI4SE/capstone-corpus-forge/routes/ingestion.py', reloading  * Restarting with stat  * Debugger is active!  * Debugger PIN: 104-060-512 127.0.0.1 - - [28/May/2026 10:03:57] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:04:00] "GET / HTTP/1.1" 200 -  * Detected change in '/Users/yuun/Documents/AI4SE/capstone-corpus-forge/routes/chat.py', reloading  * Restarting with stat Traceback (most recent call last):   File "/Users/yuun/Documents/AI4SE/capstone-corpus-forge/app.py", line 11, in <module>     from routes.chat import chat_bp  # 1. Import the chat blueprint     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   File "/Users/yuun/Documents/AI4SE/capstone-corpus-forge/routes/chat.py", line 387     context_text = "\n\n".join([f"[{c.get('filename')}]                                 ^ SyntaxError: unterminated f-string literal (detected at line 387)
-- **CoPilot Mode**: Agent
-- **CoPilot Model**: GPT-5.4 mini
-- **Socratic Mode**: ON
-- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
-- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
-
-### **New Interaction**
-- **Agent Version**: 2.3
-- **Date**: 28-05-2026 10:08
-- **User**: redowan-ahmed.sameer@epita.fr
-- **Prompt**: [Terminal b3db29b4-1fef-45a0-94d0-4661176a963f notification: command completed with exit code 0. The terminal has been cleaned up.] Terminal output: yuun@Redowans-MacBook-Air capstone-corpus-forge %  /Users/yuun/Documents/AI4SE/capstone-corpus-forge/.venv/bin/python -u app.py  * Serving Flask app 'app'  * Debug mode: on WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.  * Running on http://127.0.0.1:5000 Press CTRL+C to quit  * Restarting with stat  * Debugger is active!  * Debugger PIN: 104-060-512 127.0.0.1 - - [28/May/2026 10:05:17] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:05:19] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:05:19] "GET /static/js/chat.js HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:05:19] "GET /static/css/chat.css HTTP/1.1" 304 - 127.0.0.1 - - [28/May/2026 10:06:49] "POST /upload HTTP/1.1" 302 - 127.0.0.1 - - [28/May/2026 10:06:49] "GET / HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:07:18] "POST /chat/generate/flashcards HTTP/1.1" 400 - 127.0.0.1 - - [28/May/2026 10:07:32] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:07:32] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /favicon.ico HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /favicon.ico HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /chat/ HTTP/1.1" 200 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /favicon.ico HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /apple-touch-icon.png HTTP/1.1" 404 - 127.0.0.1 - - [28/May/2026 10:07:33] "GET /favicon.ico HTTP/1.1" 404 -  * Detected change in '/Users/yuun/Documents/AI4SE/capstone-corpus-forge/app.py', reloading  * Restarting with stat  * Debugger is active!  * Debugger PIN: 104-060-512
-- **CoPilot Mode**: Agent
-- **CoPilot Model**: GPT-5.4 mini
-- **Socratic Mode**: ON
-- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
-- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
-
-### **New Interaction**
-- **Agent Version**: 2.3
-- **Date**: 28-05-2026 10:11
-- **User**: redowan-ahmed.sameer@epita.fr
-- **Prompt**: how to run
-- **CoPilot Mode**: Agent
-- **CoPilot Model**: GPT-5.4 mini
-- **Socratic Mode**: ON
-- **Changes Made**: Logged the prompt in prompts_history.md and JOURNAL.md.
-- **Context and Reasons for Changes**: The UserPromptSubmit hook captures each prompt for traceability and repository logging.
-
-### **New Interaction**
-- **Agent Version**: 2.3
-- **Date**: 28-05-2026 10:11
-- **User**: redowan-ahmed.sameer@epita.fr
-- **Prompt**: run it
+- **Prompt**: can u add also token useage and realtime update of this feature? also add promots sent each msg = 1 prompt
 - **CoPilot Mode**: Agent
 - **CoPilot Model**: GPT-5.4 mini
 - **Socratic Mode**: ON

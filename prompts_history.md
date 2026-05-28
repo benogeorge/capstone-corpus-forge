@@ -51,3 +51,6 @@
 ### 18-05-2026 20:44
 - **Prompt**: Explain how an enterprise application isolates vector spaces between different groups or users so data never leaks across sessions. Show me how to dynamically alter the collection initialization parameter inside my VectorStoreManager constructor so that distinct workspaces generate entirely separate database tables.
 
+### 28-05-2026 09:56
+- **Prompt**: why not running
+

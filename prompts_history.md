@@ -60,3 +60,6 @@
 ### 28-05-2026 09:59
 - **Prompt**: help me run it
 
+### 28-05-2026 10:02
+- **Prompt**: Error: No documents selected. Please select files to query. Error: No documents selected. Please select files to query. Error: No documents selected. Please select files to query. Error: No documents selected. Please select files to query.   When i upload and try to ask ai to ask quuz. let ai make flash cards and quizzes also  Try all feature and increase upload limit to 10mb also
+
